@@ -1,0 +1,167 @@
+/* /Users/jukka_w/czybik-schmid/app/application/application.css */
+
+.applicationPage {
+    min-height: 100vh;
+    background: #fff;
+    color: #000;
+    font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+    font-weight: 800;
+    font-size: 0.9rem;
+    overflow-x: hidden;
+  }
+  
+  /* Responsive wrap width:
+     - never smaller than ~320px
+     - never bigger than 720px
+     - otherwise ~90vw on small screens, ~60vw on medium */
+  .applicationWrap {
+    width: min(90vw, 720px);
+    margin: 0 auto;
+    padding: 0.5rem 1rem;
+  }
+  
+  .applicationLogo {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 4rem;
+  }
+  
+  /* Responsive H1 using clamp(min, preferred, max) */
+  .applicationTitle {
+    text-align: center;
+    font-size: clamp(2.25rem, 8vw, 6rem);
+    font-weight: 800;
+    line-height: 0.9;
+    margin: 0 0 1rem 0;
+  }
+  
+  .applicationSubtitle {
+    text-align: center;
+    margin: 0 0 3rem 0;
+    color: #000000;
+  }
+  
+  /* Remove rounded corners for all inputs on the application page */
+  .applicationPage input,
+  .applicationPage textarea,
+  .applicationPage select {
+    border-radius: 0 !important;
+  }
+  
+  /* Optional: make logo scale down nicely on very small screens */
+  .applicationLogo img,
+  .applicationLogo svg {
+    max-width: 180px;
+    width: 100%;
+    height: auto;
+  }
+/* Center Turnstile + submit button (desktop + mobile) */
+.applicationPage .cf-turnstile {
+    display: flex;
+    justify-content: center;
+  }
+  
+  .applicationPage button[type="submit"] {
+    display: block;
+    width: 100%;
+    margin: 1rem auto;
+    margin-bottom: 6rem;
+  }
+
+  /* Submit button styles: inactive vs active */
+.applicationPage button[type="submit"] {
+    border-radius: 0;
+    border: 1px solid #000;
+    padding: 0.6rem 1.1rem;
+  }
+  
+  /* Inactive (disabled): white background + black text */
+  .applicationPage button[type="submit"]:disabled {
+    background: transparent;
+    color: #000;
+    opacity: 1; /* override Tailwind disabled opacity */
+  }
+  
+  /* Active (enabled): black background + white text */
+  .applicationPage button[type="submit"]:not(:disabled) {
+    background: #000;
+    color: #fff;
+    cursor: pointer;
+  }
+  @media (max-width: 640px) {
+    .applicationWrap {
+      width: 100vw;
+      padding: 0.5rem 0.5rem;
+    }
+  }
+
+
+  /* ---- Interactive "alive" effects ---- */
+
+/* Inputs: smooth transitions + nicer focus */
+.applicationPage input,
+.applicationPage textarea,
+.applicationPage select {
+  transition: border-color 160ms ease, box-shadow 160ms ease, transform 120ms ease;
+  outline: none;
+}
+
+/* Slight lift on hover (only on devices that actually hover) */
+@media (hover: hover) and (pointer: fine) {
+  .applicationPage input:hover,
+  .applicationPage textarea:hover,
+  .applicationPage select:hover {
+    border-color: #000;
+  }
+}
+
+/* Focus ring + subtle lift */
+.applicationPage input:focus,
+.applicationPage textarea:focus,
+.applicationPage select:focus {
+  border-color: #000;
+  box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.12);
+}
+
+/* Button: smooth transitions + hover for enabled state */
+.applicationPage button[type="submit"] {
+  transition: background-color 160ms ease, color 160ms ease, transform 120ms ease,
+    box-shadow 160ms ease;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .applicationPage button[type="submit"]:not(:disabled):hover {
+    transform: translateY(-1px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.18);
+  }
+
+  .applicationPage button[type="submit"]:not(:disabled):active {
+    transform: translateY(0px);
+    box-shadow: 0 5px 12px rgba(0, 0, 0, 0.16);
+  }
+
+  /* Disabled: show it's not clickable */
+  .applicationPage button[type="submit"]:disabled:hover {
+    cursor: not-allowed;
+  }
+}
+
+/* Make labels feel clickable */
+.applicationPage label {
+  cursor: text;
+}
+
+.applicationPage label input[type="checkbox"],
+.applicationPage label input[type="radio"] {
+  cursor: pointer;
+}
+
+/* Optional: smooth open/close for the details block */
+.applicationPage details > summary {
+  transition: opacity 160ms ease;
+}
+@media (hover: hover) and (pointer: fine) {
+  .applicationPage details > summary:hover {
+    opacity: 0.75;
+  }
+}
