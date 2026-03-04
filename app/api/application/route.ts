@@ -2,8 +2,24 @@
 
 import { sanityWriteClient } from "@/sanity/lib/sanity.server";
 import { Resend } from "resend";
+import { ratelimit } from "@/sanity/lib/ratelimit";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
+
+async function verifyTurnstile(token: string, ip?: string) {
+  const secret = process.env.TURNSTILE_SECRET_KEY!;
+  const form = new FormData();
+  form.append("secret", secret);
+  form.append("response", token);
+  if (ip) form.append("remoteip", ip);
+
+  const resp = await fetch(
+    "https://challenges.cloudflare.com/turnstile/v0/siteverify",
+    { method: "POST", body: form }
+  );
+
+  return (await resp.json()) as { success: boolean; "error-codes"?: string[] };
+}
 
 function formatText(body: any) {
   return [
@@ -36,7 +52,36 @@ function formatText(body: any) {
 }
 
 export async function POST(req: Request) {
+  const origin = req.headers.get("origin");
+  const allowed = process.env.ALLOWED_ORIGIN || "";
+  if (allowed && origin && origin !== allowed) {
+    return Response.json({ error: "Forbidden" }, { status: 403 });
+  }
+
+  const ip =
+    req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
+    req.headers.get("x-real-ip") ||
+    "unknown";
+
+  const rl = await ratelimit.limit(`application:${ip}`);
+  if (!rl.success) {
+    return Response.json(
+      { error: "Too many requests. Please try again later." },
+      { status: 429 }
+    );
+  }
+
   const body = await req.json().catch(() => null);
+
+  // Captcha check (server-side)
+  const token = String(body?.turnstileToken || "");
+  if (!token) {
+    return Response.json({ error: "Captcha required" }, { status: 400 });
+  }
+  const verify = await verifyTurnstile(token, ip === "unknown" ? undefined : ip);
+  if (!verify.success) {
+    return Response.json({ error: "Captcha failed" }, { status: 400 });
+  }
 
   if (!body?.consent) {
     return Response.json({ error: "Consent is required" }, { status: 400 });
@@ -57,29 +102,23 @@ export async function POST(req: Request) {
     const text = formatText(body);
     const subject = `Neue Terminanfrage: ${body.firstName || ""} ${body.lastName || ""}`.trim();
 
-    // Send to owner (capture result)
-    const ownerResult = await resend.emails.send({
+    await resend.emails.send({
       from,
       to: owner,
       subject,
       text,
       replyTo: body.email ? String(body.email) : undefined,
     });
-    console.log("RESEND ownerResult:", ownerResult);
 
-    // Send copy to applicant (capture result)
-    let userResult: any = null;
     if (body.email) {
-      userResult = await resend.emails.send({
+      await resend.emails.send({
         from,
         to: String(body.email),
         subject: "Kopie Ihrer Terminanfrage",
         text: `Vielen Dank! Wir haben Ihre Anfrage erhalten.\n\n---\n${text}`,
       });
-      console.log("RESEND userResult:", userResult);
     }
 
-    // Return results to inspect in Network tab
     return Response.json({ ok: true, id: doc._id }, { status: 200 });
   } catch (err: any) {
     console.error("API /api/application error:", err);

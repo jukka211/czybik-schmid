@@ -1,15 +1,38 @@
+// /Users/jukka_w/czybik-schmid/app/application/page.tsx
+
 "use client";
 
-import { useState } from "react";
+import Script from "next/script";
+import { useEffect, useState } from "react";
 
 export default function ApplicationPage() {
   const [consent, setConsent] = useState(false);
+  const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
+  const [mounted, setMounted] = useState(false);
 
   const [submitting, setSubmitting] = useState(false);
-const [message, setMessage] = useState<string | null>(null);
+  const [message, setMessage] = useState<string | null>(null);
+
+  useEffect(() => {
+    setMounted(true);
+
+    (window as any).onTurnstileSuccess = (token: string) => {
+      setTurnstileToken(token);
+    };
+
+    return () => {
+      delete (window as any).onTurnstileSuccess;
+    };
+  }, []);
 
   return (
     <main className="max-w-3xl mx-auto p-6 space-y-8">
+      {/* Load Turnstile only on the client */}
+      <Script
+        src="https://challenges.cloudflare.com/turnstile/v0/api.js"
+        strategy="afterInteractive"
+      />
+
       <header className="space-y-2">
         <h1 className="text-3xl font-semibold">Terminanfrage</h1>
         <p className="text-sm text-neutral-600">
@@ -18,45 +41,58 @@ const [message, setMessage] = useState<string | null>(null);
       </header>
 
       <form
-  className="space-y-8"
-  onSubmit={async (e) => {
-    e.preventDefault();
-    setMessage(null);
-    setSubmitting(true);
+        className="space-y-8"
+        onSubmit={async (e) => {
+          e.preventDefault();
+          setMessage(null);
+          setSubmitting(true);
 
-    const form = e.currentTarget;
-    const fd = new FormData(form);
+          const form = e.currentTarget;
+          const fd = new FormData(form);
 
-    const raw = Object.fromEntries(fd.entries());
+          const raw = Object.fromEntries(fd.entries());
 
-    const payload = {
-      ...raw,
-      consent: Boolean(fd.get("consent")),
-    };
+          const payload = {
+            ...raw,
+            consent: Boolean(fd.get("consent")),
+            turnstileToken: String(fd.get("turnstileToken") || ""),
+          };
 
-    try {
-      const res = await fetch("/api/application", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      });
+          try {
+            const res = await fetch("/api/application", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(payload),
+            });
 
-      const data = await res.json().catch(() => null);
+            const data = await res.json().catch(() => null);
 
-      if (!res.ok) {
-        throw new Error(data?.error || "Something went wrong");
-      }
+            if (!res.ok) {
+              throw new Error(data?.error || "Something went wrong");
+            }
 
-      setMessage(`✅ Sent! Your request ID is ${data?.id || "—"}. You will receive a copy by email.`);
-      form.reset();
-      setConsent(false);
-    } catch (err: any) {
-      setMessage(`❌ ${err.message || "Submit failed"}`);
-    } finally {
-      setSubmitting(false);
-    }
-  }}
->
+            setMessage(
+              `✅ Sent! Your request ID is ${data?.id || "—"}. You will receive a copy by email.`
+            );
+
+            form.reset();
+            setConsent(false);
+            setTurnstileToken(null);
+
+            // Reset Turnstile widget if available
+            try {
+              (window as any).turnstile?.reset?.();
+            } catch {}
+          } catch (err: any) {
+            setMessage(`❌ ${err.message || "Submit failed"}`);
+          } finally {
+            setSubmitting(false);
+          }
+        }}
+      >
+        {/* Hidden input so token is included in FormData */}
+        <input type="hidden" name="turnstileToken" value={turnstileToken ?? ""} />
+
         {/* 1. Kontaktdaten */}
         <section className="space-y-4">
           <h2 className="text-xl font-semibold">1. Kontaktdaten</h2>
@@ -197,7 +233,7 @@ const [message, setMessage] = useState<string | null>(null);
           </div>
         </section>
 
-        {/* Consent */}
+        {/* Consent + Captcha */}
         <section className="space-y-3 border-t pt-6">
           <label className="flex items-start gap-3">
             <input
@@ -226,14 +262,25 @@ const [message, setMessage] = useState<string | null>(null);
               </p>
             </div>
           </details>
+
+          {/* Turnstile widget (client-only to avoid hydration mismatch) */}
+          {mounted && (
+            <div
+              className="cf-turnstile"
+              data-sitekey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY}
+              data-callback="onTurnstileSuccess"
+            />
+          )}
+
           {message && <p className="text-sm">{message}</p>}
+
           <button
-  type="submit"
-  className="px-4 py-2 rounded-md bg-black text-white disabled:opacity-40"
-  disabled={!consent || submitting}
->
-  {submitting ? "Sending..." : "Terminanfrage absenden"}
-</button>
+            type="submit"
+            className="px-4 py-2 rounded-md bg-black text-white disabled:opacity-40"
+            disabled={!consent || submitting || !turnstileToken}
+          >
+            {submitting ? "Sending..." : "Terminanfrage absenden"}
+          </button>
         </section>
       </form>
     </main>
