@@ -52,11 +52,15 @@ function formatText(body: any) {
 }
 
 export async function POST(req: Request) {
-  const origin = req.headers.get("origin");
-  const allowed = process.env.ALLOWED_ORIGIN || "";
-  if (allowed && origin && origin !== allowed) {
-    return Response.json({ error: "Forbidden" }, { status: 403 });
-  }
+    const origin = req.headers.get("origin") || "";
+    const allowedList = (process.env.ALLOWED_ORIGINS || "")
+      .split(",")
+      .map((s) => s.trim())
+      .filter(Boolean);
+    
+    if (allowedList.length && origin && !allowedList.includes(origin)) {
+      return Response.json({ error: "Forbidden" }, { status: 403 });
+    }
 
   const ip =
     req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
