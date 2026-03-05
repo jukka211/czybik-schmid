@@ -5,6 +5,7 @@
 import Script from "next/script";
 import { useEffect, useState } from "react";
 import "./application.css";
+import Link from "next/link";
 
 export default function ApplicationPage() {
   const [consent, setConsent] = useState(false);
@@ -28,16 +29,14 @@ export default function ApplicationPage() {
 
   return (
     <main className="applicationPage">
-      {/* Load Turnstile only on the client */}
       <Script
         src="https://challenges.cloudflare.com/turnstile/v0/api.js"
         strategy="afterInteractive"
       />
 
       <div className="applicationWrap">
-        {/* Logo centered (replace SVG with your real logo) */}
         <div className="applicationLogo" aria-label="Logo">
-        <img src="/czybik schmid.svg" alt="Logo" width={160} height={160} />
+          <img src="/czybik schmid.svg" alt="Logo" width={90} height={90} />
         </div>
 
         <header>
@@ -83,7 +82,6 @@ export default function ApplicationPage() {
               setConsent(false);
               setTurnstileToken(null);
 
-              // Reset Turnstile widget if available
               try {
                 (window as any).turnstile?.reset?.();
               } catch {}
@@ -94,162 +92,169 @@ export default function ApplicationPage() {
             }
           }}
         >
-          {/* Hidden input so token is included in FormData */}
           <input type="hidden" name="turnstileToken" value={turnstileToken ?? ""} />
 
-          {/* 1. Kontaktdaten */}
+          {/* 1. Name und Kontaktdaten (ONE field) */}
           <section className="space-y-4">
-            <h2 className="text-xl ">1. Kontaktdaten</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <label className="space-y-1">
-                <span className="text-sm">Name</span>
-                <input className="w-full border rounded-md p-2" name="firstName" required />
-              </label>
-              <label className="space-y-1">
-                <span className="text-sm">Nachname</span>
-                <input className="w-full border rounded-md p-2" name="lastName" required />
-              </label>
-              <label className="space-y-1">
-                <span className="text-sm">Telefonnummer</span>
-                <input className="w-full border rounded-md p-2" name="phone" />
-              </label>
-              <label className="space-y-1">
-                <span className="text-sm">E-Mail-Adresse</span>
-                <input className="w-full border rounded-md p-2" name="email" type="email" required />
-              </label>
-            </div>
-          </section>
-
-          {/* 2. Behörde */}
-          <section className="space-y-4">
-            <h2 className="text-xl ">2. Behörde</h2>
+            <h2 className="text-xl">1. Name und Kontaktdaten</h2>
             <label className="space-y-1">
-              <span className="text-sm">Name der Behörde</span>
-              <input className="w-full border rounded-md p-2" name="authorityName" />
+              <span className="text-sm">Name, Telefon, E-Mail</span>
+              <textarea
+                className="w-full border rounded-md p-2 min-h-24"
+                name="contactBlock"
+                placeholder={"Max Mustermann\n+49 123 456789\nmail@example.com"}
+                required
+              />
             </label>
           </section>
 
-          {/* 3. Rechnungsanschrift */}
+          {/* 2. Verbindliche Rechnungsanschrift (ONE field) */}
           <section className="space-y-4">
-            <h2 className="text-xl ">3. Verbindliche Rechnungsanschrift</h2>
+            <h2 className="text-xl">2. Verbindliche Rechnungsanschrift</h2>
             <label className="space-y-1">
               <span className="text-sm">Rechnungsanschrift</span>
-              <textarea className="w-full border rounded-md p-2 min-h-24" name="billingAddress" />
+              <textarea
+                className="w-full border rounded-md p-2 min-h-24"
+                name="billingAddress"
+                required
+              />
             </label>
           </section>
 
-          {/* 4. E-Rechnung / XRechnung */}
+          {/* 3. Kategorie (radio) */}
           <section className="space-y-4">
-            <h2 className="text-xl ">4. E-Rechnung / XRechnung</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <label className="space-y-1">
-                <span className="text-sm">Leitweg-ID</span>
-                <input className="w-full border rounded-md p-2" name="leitwegId" />
+            <h2 className="text-xl">3. Kategorie</h2>
+            <div className="flex flex-col gap-3">
+              <label className="flex items-center gap-2">
+                <input type="radio" name="category" value="event_foto" required />
+                <span>Event Foto</span>
               </label>
-              <label className="space-y-1">
-                <span className="text-sm">Bewirtschafternummer</span>
-                <input className="w-full border rounded-md p-2" name="bewirtschafterNummer" />
+              <label className="flex items-center gap-2">
+                <input type="radio" name="category" value="event_foto_video" />
+                <span>Event Foto + Video</span>
+              </label>
+              <label className="flex items-center gap-2">
+                <input type="radio" name="category" value="portrait" />
+                <span>Porträt</span>
               </label>
             </div>
           </section>
 
-          {/* 5. Thema */}
+          {/* 4. Thema / Beschreibung (ONE field) */}
           <section className="space-y-4">
-            <h2 className="text-xl ">5. Thema</h2>
+            <h2 className="text-xl">4. Thema / Beschreibung</h2>
             <label className="space-y-1">
-              <span className="text-sm">Beschreiben Sie Ihr Thema…</span>
-              <textarea className="w-full border rounded-md p-2 min-h-28" name="topicDescription" required />
+              <span className="text-sm">Thema / Beschreibung</span>
+              <textarea
+                className="w-full border rounded-md p-2 min-h-28"
+                name="topicDescription"
+                required
+              />
             </label>
           </section>
 
-          {/* 6. Ort */}
+          {/* 5. Datum (ONE field) */}
           <section className="space-y-4">
-            <h2 className="text-xl ">6. Ort</h2>
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-              <label className="space-y-1 md:col-span-2">
-                <span className="text-sm">Straße</span>
-                <input className="w-full border rounded-md p-2" name="street" />
-              </label>
-              <label className="space-y-1">
-                <span className="text-sm">Hausnummer</span>
-                <input className="w-full border rounded-md p-2" name="houseNumber" />
-              </label>
-              <label className="space-y-1">
-                <span className="text-sm">PLZ</span>
-                <input className="w-full border rounded-md p-2" name="postalCode" />
-              </label>
-              <label className="space-y-1 md:col-span-2">
-                <span className="text-sm">Ort</span>
-                <input className="w-full border rounded-md p-2" name="city" />
-              </label>
-            </div>
-          </section>
-
-          {/* 7. Datum und Zeitraum */}
-          <section className="space-y-4">
-            <h2 className="text-xl ">7. Datum und Zeitraum</h2>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <label className="space-y-1">
-                <span className="text-sm">Datum</span>
-                <input
-                  className="w-full border rounded-md p-2"
-                  name="date"
-                  placeholder="TT.MM.JJJJ"
-                  required
-                />
-              </label>
-              <label className="space-y-1">
-                <span className="text-sm">Startzeit</span>
-                <input
-                  className="w-full border rounded-md p-2"
-                  name="startTime"
-                  placeholder="HH:MM"
-                  required
-                />
-              </label>
-              <label className="space-y-1">
-                <span className="text-sm">Endzeit</span>
-                <input
-                  className="w-full border rounded-md p-2"
-                  name="endTime"
-                  placeholder="HH:MM"
-                  required
-                />
-              </label>
-            </div>
-          </section>
-
-          {/* 8. Bildanzahl */}
-          <section className="space-y-4">
-            <h2 className="text-xl ">8. Bildanzahl</h2>
-            <label className="space-y-1">
-              <span className="text-sm">Anzahl</span>
-              <input className="w-full border rounded-md p-2" name="imageCount" type="number" min={0} />
-            </label>
-          </section>
-
-          {/* 9. Lieferdatum */}
-          <section className="space-y-4">
-            <h2 className="text-xl ">9. Lieferdatum</h2>
+            <h2 className="text-xl">5. Datum</h2>
             <label className="space-y-1">
               <span className="text-sm">TT.MM.JJJJ</span>
-              <input className="w-full border rounded-md p-2" name="deliveryDate" placeholder="TT.MM.JJJJ" />
+              <input
+                className="w-full border rounded-md p-2"
+                name="date"
+                placeholder="TT.MM.JJJJ"
+                required
+              />
             </label>
           </section>
 
-          {/* 10. Liefermedium */}
+          {/* 6. Uhrzeit Einsatzzeiten (ONE field) */}
           <section className="space-y-4">
-            <h2 className="text-xl ">10. Liefermedium</h2>
-            <div className="flex gap-6">
-              <label className="flex items-center gap-2">
-                <input type="radio" name="deliveryMedium" value="download" defaultChecked />
-                <span>Download</span>
-              </label>
-              <label className="flex items-center gap-2">
-                <input type="radio" name="deliveryMedium" value="usb" />
-                <span>USB-Stick</span>
-              </label>
-            </div>
+            <h2 className="text-xl">6. Uhrzeit Einsatzzeiten</h2>
+            <label className="space-y-1">
+              <span className="text-sm">z. B. 09:00–14:00</span>
+              <input
+                className="w-full border rounded-md p-2"
+                name="assignmentTimes"
+                placeholder="09:00–14:00"
+                required
+              />
+            </label>
+          </section>
+
+          {/* 7. Uhrzeit Start der Veranstaltung (ONE field) */}
+          <section className="space-y-4">
+            <h2 className="text-xl">7. Uhrzeit Start der Veranstaltung</h2>
+            <label className="space-y-1">
+              <span className="text-sm">HH:MM</span>
+              <input
+                className="w-full border rounded-md p-2"
+                name="eventStartTime"
+                placeholder="HH:MM"
+                required
+              />
+            </label>
+          </section>
+
+          {/* 8. Adresse / Ort (ONE field) */}
+          <section className="space-y-4">
+            <h2 className="text-xl">8. Adresse / Ort</h2>
+            <label className="space-y-1">
+              <span className="text-sm">Straße, Hausnummer, PLZ, Ort</span>
+              <textarea
+                className="w-full border rounded-md p-2 min-h-24"
+                name="address"
+                placeholder={"Musterstraße 1\n12345 Musterstadt"}
+                required
+              />
+            </label>
+          </section>
+
+          {/* 9. Bildanzahl (ONE field) */}
+          <section className="space-y-4">
+            <h2 className="text-xl">9. Bildanzahl</h2>
+            <label className="space-y-1">
+              <span className="text-sm">Anzahl</span>
+              <input
+                className="w-full border rounded-md p-2"
+                name="imageCount"
+                type="number"
+                min={0}
+              />
+            </label>
+          </section>
+
+          {/* 10. Lieferdatum (ONE field) */}
+          <section className="space-y-4">
+            <h2 className="text-xl">10. Lieferdatum</h2>
+            <label className="space-y-1">
+              <span className="text-sm">TT.MM.JJJJ</span>
+              <input
+                className="w-full border rounded-md p-2"
+                name="deliveryDate"
+                placeholder="TT.MM.JJJJ"
+              />
+            </label>
+          </section>
+
+          {/* 11. Leitweg-ID (ONE field) */}
+          <section className="space-y-4">
+            <h2 className="text-xl">11. Leitweg-ID</h2>
+            <label className="space-y-1">
+              <span className="text-sm">Leitweg-ID</span>
+              <input className="w-full border rounded-md p-2" name="leitwegId" />
+            </label>
+          </section>
+
+          {/* 12. Bewirtschafternummer / Referenz Anmerkungen (ONE field) */}
+          <section className="space-y-4">
+            <h2 className="text-xl">12. Bewirtschafternummer / Referenz Anmerkungen</h2>
+            <label className="space-y-1">
+              <span className="text-sm">Bewirtschafternummer / Referenz / Anmerkungen</span>
+              <textarea
+                className="w-full border rounded-md p-2 min-h-24"
+                name="referenceNotes"
+              />
+            </label>
           </section>
 
           {/* Consent + Captcha */}
@@ -268,28 +273,14 @@ export default function ApplicationPage() {
               </span>
             </label>
 
-            <details className="text-sm text-neutral-700">
-              <summary className="cursor-pointer font-medium">Pflichthinweise zum Onlinebriefingformular</summary>
-              <div className="mt-2 space-y-2">
-                <p>
-                  Dieses Formular speichert alle eingegebene Inhalte (z. B. Namen, E-Mailadresse, Nachricht etc.) sowie
-                  automatisch die IP-Nummer.
-                </p>
-                <p>
-                  Die Speicherung dieser Daten dient der Zuordnung der Anfrage und der anschließenden Beantwortung
-                  derselben. Mehr dazu in unserer Datenschutzerklärung.
-                </p>
-              </div>
-            </details>
 
-            {/* Turnstile widget (client-only to avoid hydration mismatch) */}
+
             {mounted && (
               <div
                 className="cf-turnstile"
                 data-sitekey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY}
                 data-callback="onTurnstileSuccess"
                 data-theme="light"
-          
                 data-language="de"
               />
             )}
@@ -303,6 +294,27 @@ export default function ApplicationPage() {
             >
               {submitting ? "Sending..." : "Terminanfrage absenden"}
             </button>
+
+            <details className="text-sm text-neutral-700">
+              <summary className="cursor-pointer font-medium">
+                Pflichthinweise zum Onlinebriefingformular
+              </summary>
+              <div className="mt-2 space-y-2">
+                <p>
+                  Dieses Formular speichert alle eingegebene Inhalte (z. B. Namen, E-Mailadresse, Nachricht etc.) sowie
+                  automatisch die IP-Nummer.
+                </p>
+                <p>
+  Die Speicherung dieser Daten dient der Zuordnung der Anfrage und der anschließenden Beantwortung
+  derselben. Mehr dazu in unserer{" "}
+  <Link href="/datenschutz" className="underline">
+    Datenschutzerklärung
+  </Link>
+  .
+</p>
+              </div>
+            </details>
+
           </section>
         </form>
       </div>
