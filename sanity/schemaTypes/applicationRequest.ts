@@ -1,3 +1,4 @@
+// /Users/jukka_w/czybik-schmid/sanity/schemaTypes/applicationRequest.ts
 import { defineField, defineType } from "sanity";
 
 export const applicationRequest = defineType({
@@ -5,39 +6,45 @@ export const applicationRequest = defineType({
   title: "Application Requests",
   type: "document",
   fields: [
-    defineField({ name: "firstName", title: "First name", type: "string" }),
-    defineField({ name: "lastName", title: "Last name", type: "string" }),
-    defineField({ name: "phone", title: "Phone", type: "string" }),
-    defineField({ name: "email", title: "Email", type: "string" }),
+    // 1
+    defineField({ name: "contactBlock", title: "Name und Kontaktdaten", type: "text" }),
 
-    defineField({ name: "authorityName", title: "Authority name", type: "string" }),
-    defineField({ name: "billingAddress", title: "Billing address", type: "text" }),
+    // 2
+    defineField({ name: "billingAddress", title: "Rechnungsanschrift", type: "text" }),
 
-    defineField({ name: "leitwegId", title: "Leitweg-ID", type: "string" }),
-    defineField({ name: "bewirtschafterNummer", title: "Bewirtschafternummer", type: "string" }),
-
-    defineField({ name: "topicDescription", title: "Topic description", type: "text" }),
-
-    defineField({ name: "street", title: "Street", type: "string" }),
-    defineField({ name: "houseNumber", title: "House number", type: "string" }),
-    defineField({ name: "postalCode", title: "Postal code", type: "string" }),
-    defineField({ name: "city", title: "City", type: "string" }),
-
-    defineField({ name: "date", title: "Date", type: "string" }),
-    defineField({ name: "startTime", title: "Start time", type: "string" }),
-    defineField({ name: "endTime", title: "End time", type: "string" }),
-
-    defineField({ name: "imageCount", title: "Image count", type: "number" }),
-
-    defineField({ name: "deliveryDate", title: "Delivery date", type: "string" }),
+    // 3
     defineField({
-      name: "deliveryMedium",
-      title: "Delivery medium",
+      name: "category",
+      title: "Kategorie",
       type: "string",
-      options: { list: [{ title: "Download", value: "download" }, { title: "USB", value: "usb" }] },
+      options: {
+        list: [
+          { title: "Event Foto", value: "event_foto" },
+          { title: "Event Foto + Video", value: "event_foto_video" },
+          { title: "Porträt", value: "portrait" },
+        ],
+        layout: "radio",
+      },
     }),
 
+    // 4–12
+    defineField({ name: "topicDescription", title: "Thema / Beschreibung", type: "text" }),
+    defineField({ name: "date", title: "Datum", type: "string" }),
+    defineField({ name: "assignmentTimes", title: "Uhrzeit Einsatzzeiten", type: "string" }),
+    defineField({ name: "eventStartTime", title: "Uhrzeit Start der Veranstaltung", type: "string" }),
+    defineField({ name: "address", title: "Adresse / Ort", type: "text" }),
+    defineField({ name: "imageCount", title: "Bildanzahl", type: "number" }),
+    defineField({ name: "deliveryDate", title: "Lieferdatum", type: "string" }),
+    defineField({ name: "leitwegId", title: "Leitweg-ID", type: "string" }),
+    defineField({
+      name: "referenceNotes",
+      title: "Bewirtschafternummer / Referenz / Anmerkungen",
+      type: "text",
+    }),
+
+    // System
     defineField({ name: "consent", title: "Consent", type: "boolean" }),
+    defineField({ name: "turnstileToken", title: "Turnstile Token", type: "string", hidden: true }),
 
     defineField({
       name: "createdAt",

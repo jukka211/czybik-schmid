@@ -21,31 +21,51 @@ async function verifyTurnstile(token: string, ip?: string) {
   return (await resp.json()) as { success: boolean; "error-codes"?: string[] };
 }
 
+function formatCategory(v: any) {
+  const s = String(v || "");
+  if (s === "event_foto") return "Event Foto";
+  if (s === "event_foto_video") return "Event Foto + Video";
+  if (s === "portrait") return "Porträt";
+  return s || "";
+}
+
 function formatText(body: any) {
   return [
-    `Kontaktdaten`,
-    `Name: ${(body.firstName || "").trim()} ${(body.lastName || "").trim()}`.trim(),
-    `Telefon: ${body.phone || ""}`,
-    `E-Mail: ${body.email || ""}`,
+    `1. Name und Kontaktdaten`,
+    `${body.contactBlock || ""}`,
     ``,
-    `Behörde: ${body.authorityName || ""}`,
-    ``,
-    `Rechnungsanschrift:`,
+    `2. Verbindliche Rechnungsanschrift`,
     `${body.billingAddress || ""}`,
     ``,
-    `E-Rechnung / XRechnung:`,
-    `Leitweg-ID: ${body.leitwegId || ""}`,
-    `Bewirtschafternummer: ${body.bewirtschafterNummer || ""}`,
+    `3. Kategorie`,
+    `${formatCategory(body.category)}`,
     ``,
-    `Thema:`,
+    `4. Thema / Beschreibung`,
     `${body.topicDescription || ""}`,
     ``,
-    `Ort: ${body.street || ""} ${body.houseNumber || ""}, ${body.postalCode || ""} ${body.city || ""}`.trim(),
+    `5. Datum`,
+    `${body.date || ""}`,
     ``,
-    `Datum/Zeitraum: ${body.date || ""} ${body.startTime || ""}-${body.endTime || ""}`.trim(),
-    `Bildanzahl: ${body.imageCount || ""}`,
-    `Lieferdatum: ${body.deliveryDate || ""}`,
-    `Liefermedium: ${body.deliveryMedium || ""}`,
+    `6. Uhrzeit Einsatzzeiten`,
+    `${body.assignmentTimes || ""}`,
+    ``,
+    `7. Uhrzeit Start der Veranstaltung`,
+    `${body.eventStartTime || ""}`,
+    ``,
+    `8. Adresse / Ort`,
+    `${body.address || ""}`,
+    ``,
+    `9. Bildanzahl`,
+    `${body.imageCount || ""}`,
+    ``,
+    `10. Lieferdatum`,
+    `${body.deliveryDate || ""}`,
+    ``,
+    `11. Leitweg-ID`,
+    `${body.leitwegId || ""}`,
+    ``,
+    `12. Bewirtschafternummer / Referenz / Anmerkungen`,
+    `${body.referenceNotes || ""}`,
     ``,
     `Zustimmung: ${body.consent ? "JA" : "NEIN"}`,
   ].join("\n");

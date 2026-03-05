@@ -65,7 +65,7 @@
     display: block;
     width: 100%;
     margin: 1rem auto;
-    margin-bottom: 6rem;
+    margin-bottom: 3rem;
   }
 
   /* Submit button styles: inactive vs active */
@@ -96,6 +96,12 @@
   }
 
 
+
+
+
+
+
+  
   /* ---- Interactive "alive" effects ---- */
 
 /* Inputs: smooth transitions + nicer focus */
