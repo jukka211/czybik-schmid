@@ -64,8 +64,11 @@ function formatText(body: any) {
     `11. Leitweg-ID`,
     `${body.leitwegId || ""}`,
     ``,
-    `12. Bewirtschafternummer / Referenz / Anmerkungen`,
-    `${body.referenceNotes || ""}`,
+    `12. Bewirtschafternummer / Referenz`,
+    `${body.referenceNumber || ""}`,
+    ``,
+    `Anmerkungen`,
+    `${body.notes || ""}`,
     ``,
     `Zustimmung: ${body.consent ? "JA" : "NEIN"}`,
   ].join("\n");

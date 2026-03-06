@@ -98,7 +98,7 @@ export default function ApplicationPage() {
           <section className="space-y-4">
             <h2 className="text-xl">1. Name und Kontaktdaten</h2>
             <label className="space-y-1">
-              <span className="text-sm">Name, Telefon, E-Mail</span>
+              <span className="text-sm">Name, Telefon, E-Mail *</span>
               <textarea
                 className="w-full border rounded-md p-2 min-h-24"
                 name="contactBlock"
@@ -112,7 +112,7 @@ export default function ApplicationPage() {
           <section className="space-y-4">
             <h2 className="text-xl">2. Verbindliche Rechnungsanschrift</h2>
             <label className="space-y-1">
-              <span className="text-sm">Rechnungsanschrift</span>
+              <span className="text-sm">Rechnungsanschrift *</span>
               <textarea
                 className="w-full border rounded-md p-2 min-h-24"
                 name="billingAddress"
@@ -126,7 +126,7 @@ export default function ApplicationPage() {
             <h2 className="text-xl">3. Kategorie</h2>
             <div className="flex flex-col gap-3">
               <label className="flex items-center gap-2">
-                <input type="radio" name="category" value="event_foto" required />
+                <input type="radio" name="category" value="event_foto" />
                 <span>Event Foto</span>
               </label>
               <label className="flex items-center gap-2">
@@ -144,11 +144,11 @@ export default function ApplicationPage() {
           <section className="space-y-4">
             <h2 className="text-xl">4. Thema / Beschreibung</h2>
             <label className="space-y-1">
-              <span className="text-sm">Thema / Beschreibung</span>
+              <span className="text-sm">Thema / Beschreibung *</span>
               <textarea
                 className="w-full border rounded-md p-2 min-h-28"
                 name="topicDescription"
-                required
+                
               />
             </label>
           </section>
@@ -162,7 +162,6 @@ export default function ApplicationPage() {
                 className="w-full border rounded-md p-2"
                 name="date"
                 placeholder="TT.MM.JJJJ"
-                required
               />
             </label>
           </section>
@@ -176,7 +175,6 @@ export default function ApplicationPage() {
                 className="w-full border rounded-md p-2"
                 name="assignmentTimes"
                 placeholder="09:00–14:00"
-                required
               />
             </label>
           </section>
@@ -190,7 +188,6 @@ export default function ApplicationPage() {
                 className="w-full border rounded-md p-2"
                 name="eventStartTime"
                 placeholder="HH:MM"
-                required
               />
             </label>
           </section>
@@ -199,7 +196,7 @@ export default function ApplicationPage() {
           <section className="space-y-4">
             <h2 className="text-xl">8. Adresse / Ort</h2>
             <label className="space-y-1">
-              <span className="text-sm">Straße, Hausnummer, PLZ, Ort</span>
+              <span className="text-sm">Straße, Hausnummer, PLZ, Ort *</span>
               <textarea
                 className="w-full border rounded-md p-2 min-h-24"
                 name="address"
@@ -245,14 +242,26 @@ export default function ApplicationPage() {
             </label>
           </section>
 
-          {/* 12. Bewirtschafternummer / Referenz Anmerkungen (ONE field) */}
+          {/* 12. Bewirtschafternummer / Referenz (ONE field) */}
           <section className="space-y-4">
-            <h2 className="text-xl">12. Bewirtschafternummer / Referenz Anmerkungen</h2>
+            <h2 className="text-xl">12. Bewirtschafternummer / Referenz</h2>
             <label className="space-y-1">
-              <span className="text-sm">Bewirtschafternummer / Referenz / Anmerkungen</span>
+              <span className="text-sm">Bewirtschafternummer / Referenz</span>
               <textarea
                 className="w-full border rounded-md p-2 min-h-24"
-                name="referenceNotes"
+                name="referenceNumber"
+              />
+            </label>
+          </section>
+
+          {/* Anmerkungen (ONE field) */}
+          <section className="space-y-4">
+            <h2 className="text-xl">Anmerkungen</h2>
+            <label className="space-y-1">
+              <span className="text-sm">Anmerkungen</span>
+              <textarea
+                className="w-full border rounded-md p-2 min-h-24"
+                name="notes"
               />
             </label>
           </section>
@@ -295,25 +304,9 @@ export default function ApplicationPage() {
               {submitting ? "Sending..." : "Terminanfrage absenden"}
             </button>
 
-            <details className="text-sm text-neutral-700">
-              <summary className="cursor-pointer font-medium">
-                Pflichthinweise zum Onlinebriefingformular
-              </summary>
-              <div className="mt-2 space-y-2">
-                <p>
-                  Dieses Formular speichert alle eingegebene Inhalte (z. B. Namen, E-Mailadresse, Nachricht etc.) sowie
-                  automatisch die IP-Nummer.
-                </p>
-                <p>
-  Die Speicherung dieser Daten dient der Zuordnung der Anfrage und der anschließenden Beantwortung
-  derselben. Mehr dazu in unserer{" "}
-  <Link href="/datenschutz" className="underline">
-    Datenschutzerklärung
-  </Link>
-  .
-</p>
-              </div>
-            </details>
+            <Link href="/datenschutz" className="underline">
+              Datenschutzerklärung & Impressum
+            </Link>
 
           </section>
         </form>

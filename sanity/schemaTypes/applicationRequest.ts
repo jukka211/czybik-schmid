@@ -37,10 +37,11 @@ export const applicationRequest = defineType({
     defineField({ name: "deliveryDate", title: "Lieferdatum", type: "string" }),
     defineField({ name: "leitwegId", title: "Leitweg-ID", type: "string" }),
     defineField({
-      name: "referenceNotes",
-      title: "Bewirtschafternummer / Referenz / Anmerkungen",
+      name: "referenceNumber",
+      title: "Bewirtschafternummer / Referenz",
       type: "text",
     }),
+    defineField({ name: "notes", title: "Anmerkungen", type: "text" }),
 
     // System
     defineField({ name: "consent", title: "Consent", type: "boolean" }),
