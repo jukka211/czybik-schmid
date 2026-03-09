@@ -58,7 +58,10 @@
 /* Center Turnstile + submit button (desktop + mobile) */
 .applicationPage .cf-turnstile {
     display: flex;
-    justify-content: center;
+    justify-content: left;
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+    width: 100%;
   }
   
   .applicationPage button[type="submit"] {

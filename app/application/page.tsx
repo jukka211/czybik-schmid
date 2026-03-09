@@ -44,7 +44,7 @@ export default function ApplicationPage() {
         </header>
 
         <form
-          className="space-y-8"
+          className="space-y-12"
           onSubmit={async (e) => {
             e.preventDefault();
             setMessage(null);
@@ -95,10 +95,9 @@ export default function ApplicationPage() {
           <input type="hidden" name="turnstileToken" value={turnstileToken ?? ""} />
 
           {/* 1. Name und Kontaktdaten (ONE field) */}
-          <section className="space-y-4">
-            <h2 className="text-xl">1. Name und Kontaktdaten</h2>
+          <section className="space-y-2">
+            <h2 className="text-xl">1. Name und Kontaktdaten *</h2>
             <label className="space-y-1">
-              <span className="text-sm">Name, Telefon, E-Mail *</span>
               <textarea
                 className="w-full border rounded-md p-2 min-h-24"
                 name="contactBlock"
@@ -109,10 +108,10 @@ export default function ApplicationPage() {
           </section>
 
           {/* 2. Verbindliche Rechnungsanschrift (ONE field) */}
-          <section className="space-y-4">
-            <h2 className="text-xl">2. Verbindliche Rechnungsanschrift</h2>
+          <section className="space-y-2">
+            <h2 className="text-xl">2. Verbindliche Rechnungsanschrift *</h2>
             <label className="space-y-1">
-              <span className="text-sm">Rechnungsanschrift *</span>
+
               <textarea
                 className="w-full border rounded-md p-2 min-h-24"
                 name="billingAddress"
@@ -122,7 +121,7 @@ export default function ApplicationPage() {
           </section>
 
           {/* 3. Kategorie (radio) */}
-          <section className="space-y-4">
+          <section className="space-y-2">
             <h2 className="text-xl">3. Kategorie</h2>
             <div className="flex flex-col gap-3">
               <label className="flex items-center gap-2">
@@ -141,10 +140,9 @@ export default function ApplicationPage() {
           </section>
 
           {/* 4. Thema / Beschreibung (ONE field) */}
-          <section className="space-y-4">
-            <h2 className="text-xl">4. Thema / Beschreibung</h2>
+          <section className="space-y-2">
+            <h2 className="text-xl">4. Thema / Beschreibung *</h2>
             <label className="space-y-1">
-              <span className="text-sm">Thema / Beschreibung *</span>
               <textarea
                 className="w-full border rounded-md p-2 min-h-28"
                 name="topicDescription"
@@ -154,10 +152,9 @@ export default function ApplicationPage() {
           </section>
 
           {/* 5. Datum (ONE field) */}
-          <section className="space-y-4">
+          <section className="space-y-2">
             <h2 className="text-xl">5. Datum</h2>
             <label className="space-y-1">
-              <span className="text-sm">TT.MM.JJJJ</span>
               <input
                 className="w-full border rounded-md p-2"
                 name="date"
@@ -167,10 +164,9 @@ export default function ApplicationPage() {
           </section>
 
           {/* 6. Uhrzeit Einsatzzeiten (ONE field) */}
-          <section className="space-y-4">
+          <section className="space-y-2">
             <h2 className="text-xl">6. Uhrzeit Einsatzzeiten</h2>
             <label className="space-y-1">
-              <span className="text-sm">z. B. 09:00–14:00</span>
               <input
                 className="w-full border rounded-md p-2"
                 name="assignmentTimes"
@@ -180,10 +176,9 @@ export default function ApplicationPage() {
           </section>
 
           {/* 7. Uhrzeit Start der Veranstaltung (ONE field) */}
-          <section className="space-y-4">
+          <section className="space-y-2">
             <h2 className="text-xl">7. Uhrzeit Start der Veranstaltung</h2>
             <label className="space-y-1">
-              <span className="text-sm">HH:MM</span>
               <input
                 className="w-full border rounded-md p-2"
                 name="eventStartTime"
@@ -193,10 +188,9 @@ export default function ApplicationPage() {
           </section>
 
           {/* 8. Adresse / Ort (ONE field) */}
-          <section className="space-y-4">
-            <h2 className="text-xl">8. Adresse / Ort</h2>
+          <section className="space-y-2">
+            <h2 className="text-xl">8. Adresse / Ort *</h2>
             <label className="space-y-1">
-              <span className="text-sm">Straße, Hausnummer, PLZ, Ort *</span>
               <textarea
                 className="w-full border rounded-md p-2 min-h-24"
                 name="address"
@@ -207,10 +201,9 @@ export default function ApplicationPage() {
           </section>
 
           {/* 9. Bildanzahl (ONE field) */}
-          <section className="space-y-4">
+          <section className="space-y-2">
             <h2 className="text-xl">9. Bildanzahl</h2>
             <label className="space-y-1">
-              <span className="text-sm">Anzahl</span>
               <input
                 className="w-full border rounded-md p-2"
                 name="imageCount"
@@ -221,10 +214,9 @@ export default function ApplicationPage() {
           </section>
 
           {/* 10. Lieferdatum (ONE field) */}
-          <section className="space-y-4">
+          <section className="space-y-2">
             <h2 className="text-xl">10. Lieferdatum</h2>
             <label className="space-y-1">
-              <span className="text-sm">TT.MM.JJJJ</span>
               <input
                 className="w-full border rounded-md p-2"
                 name="deliveryDate"
@@ -234,19 +226,17 @@ export default function ApplicationPage() {
           </section>
 
           {/* 11. Leitweg-ID (ONE field) */}
-          <section className="space-y-4">
+          <section className="space-y-2">
             <h2 className="text-xl">11. Leitweg-ID</h2>
             <label className="space-y-1">
-              <span className="text-sm">Leitweg-ID</span>
               <input className="w-full border rounded-md p-2" name="leitwegId" />
             </label>
           </section>
 
           {/* 12. Bewirtschafternummer / Referenz (ONE field) */}
-          <section className="space-y-4">
+          <section className="space-y-2">
             <h2 className="text-xl">12. Bewirtschafternummer / Referenz</h2>
             <label className="space-y-1">
-              <span className="text-sm">Bewirtschafternummer / Referenz</span>
               <textarea
                 className="w-full border rounded-md p-2 min-h-24"
                 name="referenceNumber"
@@ -255,10 +245,9 @@ export default function ApplicationPage() {
           </section>
 
           {/* Anmerkungen (ONE field) */}
-          <section className="space-y-4">
+          <section className="space-y-1">
             <h2 className="text-xl">Anmerkungen</h2>
             <label className="space-y-1">
-              <span className="text-sm">Anmerkungen</span>
               <textarea
                 className="w-full border rounded-md p-2 min-h-24"
                 name="notes"
@@ -267,7 +256,10 @@ export default function ApplicationPage() {
           </section>
 
           {/* Consent + Captcha */}
-          <section className="space-y-3 border-t pt-6">
+          <section className="space-y-3 pt-6">
+          <span className="text-sm">
+          Bitte beachten Sie: Alle mit * gekennzeichneten Felder sind Pflichtfelder.
+              </span>
             <label className="flex items-start gap-3">
               <input
                 type="checkbox"
@@ -278,7 +270,7 @@ export default function ApplicationPage() {
                 required
               />
               <span className="text-sm">
-                JA, ich habe die nachstehenden Pflichthinweise zum Onlinebriefingformular gelesen und verstanden.
+              Ja, Terminanfrage absenden
               </span>
             </label>
 
