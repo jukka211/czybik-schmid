@@ -179,7 +179,35 @@
 .applicationActionContent > * {
   width: 100%;
 }
+.applicationIntroContent {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+}
 
+.applicationIntroContent p {
+  margin: 0;
+  font-size: clamp(0.95rem, 0.8vw, 1.4rem);
+  line-height: 1.2;
+}
+
+.applicationIntroContent a {
+  text-decoration: underline;
+}
+
+.applicationFieldTitleText {
+  font-size: clamp(0.9rem, 1.2vw, 2.5rem);
+}
+
+@media (max-width: 767px) {
+  .applicationIntroRow .applicationFieldTitleGhost {
+    display: none;
+  }
+
+  .applicationFieldTitleText {
+    font-size: clamp(1.1rem, 1.2vw, 2.5rem);
+  }
+}
 @media (max-width: 767px) {
   .applicationActionRow {
     grid-template-columns: 1fr;
@@ -289,11 +317,16 @@
   }
 
   .applicationTitle {
-    font-size: clamp(2.25rem, 11vw, 4.5rem);
+    font-size: clamp(1.1rem, 1.2vw, 2.5rem);
   }
 
   .applicationFieldRow {
+    font-size: clamp(0.95rem, 0.8vw, 1.4rem);
     grid-template-columns: 1fr;
     row-gap: 0.75rem;
+  }
+
+  .applicationFieldTitle {
+    font-size: clamp(1.1rem, 1.2vw, 2.5rem);
   }
 }

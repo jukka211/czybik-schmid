@@ -115,69 +115,100 @@ export default function ApplicationPage() {
           WebkitOverflowScrolling: "touch",
         }}
       >
-        <div className="applicationWrap">
+<div className="applicationWrap">
+  <form
+    className="space-y-12"
+    onSubmit={async (e) => {
+      e.preventDefault();
+      setMessage(null);
+      setSubmitting(true);
 
+      const form = e.currentTarget;
+      const fd = new FormData(form);
 
-          <header>
-            <h1 className="applicationTitle">Terminanfrage</h1>
-          </header>
+      const raw = Object.fromEntries(fd.entries());
 
-          <form
-            className="space-y-12"
-            onSubmit={async (e) => {
-              e.preventDefault();
-              setMessage(null);
-              setSubmitting(true);
+      const payload = {
+        ...raw,
+        consent: Boolean(fd.get("consent")),
+        turnstileToken: String(fd.get("turnstileToken") || ""),
+      };
 
-              const form = e.currentTarget;
-              const fd = new FormData(form);
+      try {
+        const res = await fetch("/api/application", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        });
 
-              const raw = Object.fromEntries(fd.entries());
+        const data = await res.json().catch(() => null);
 
-              const payload = {
-                ...raw,
-                consent: Boolean(fd.get("consent")),
-                turnstileToken: String(fd.get("turnstileToken") || ""),
-              };
+        if (!res.ok) {
+          throw new Error(data?.error || "Something went wrong");
+        }
 
-              try {
-                const res = await fetch("/api/application", {
-                  method: "POST",
-                  headers: { "Content-Type": "application/json" },
-                  body: JSON.stringify(payload),
-                });
+        setMessage(
+          `✅ Sent! Your request ID is ${
+            data?.id || "—"
+          }. You will receive a copy by email.`
+        );
 
-                const data = await res.json().catch(() => null);
+        form.reset();
+        setConsent(false);
+        setTurnstileToken(null);
 
-                if (!res.ok) {
-                  throw new Error(data?.error || "Something went wrong");
-                }
+        try {
+          (window as any).turnstile?.reset?.();
+        } catch {}
+      } catch (err: any) {
+        setMessage(`❌ ${err.message || "Submit failed"}`);
+      } finally {
+        setSubmitting(false);
+      }
+    }}
+  >
+    <input
+      type="hidden"
+      name="turnstileToken"
+      value={turnstileToken ?? ""}
+    />
 
-                setMessage(
-                  `✅ Sent! Your request ID is ${
-                    data?.id || "—"
-                  }. You will receive a copy by email.`
-                );
+    <section className="applicationFieldRow applicationIntroRow">
+      <h2
+        className="applicationFieldTitle applicationFieldTitleGhost text-xl"
+        aria-hidden="true"
+      >
+        <span className="applicationFieldTitleText">Terminanfrage</span>
+      </h2>
 
-                form.reset();
-                setConsent(false);
-                setTurnstileToken(null);
+      <div className="applicationFieldInput applicationIntroContent">
+        <header>
+          <h1 className="applicationTitle">Terminanfrage</h1>
+        </header>
 
-                try {
-                  (window as any).turnstile?.reset?.();
-                } catch {}
-              } catch (err: any) {
-                setMessage(`❌ ${err.message || "Submit failed"}`);
-              } finally {
-                setSubmitting(false);
-              }
-            }}
+        <p>
+          Sehr geehrte Damen und Herren, auf Ihren Wunsch fotografieren wir
+          deutschlandweit. Nutzen Sie bitte für Ihre Anfrage unser
+          Onlinebriefingformular.
+        </p>
+
+        <p>
+          Alternativ können Sie hier unser{" "}
+          <a
+            href="/bundesfoto-briefingformular.pdf"
+            target="_blank"
+            rel="noreferrer"
+            className="underline"
           >
-            <input
-              type="hidden"
-              name="turnstileToken"
-              value={turnstileToken ?? ""}
-            />
+            bundesfoto Briefingformular
+          </a>{" "}
+          als ausfüllbares PDF herunterladen (50 KB). Wir melden uns
+          schnellstmöglich bei Ihnen!
+        </p>
+      </div>
+    </section>
+
+    {/* keep all your existing field sections below exactly as they are */}
 
 <section className="applicationFieldRow">
   <h2 className="applicationFieldTitle text-xl">
@@ -423,6 +454,7 @@ export default function ApplicationPage() {
     >
       {submitting ? "Sending..." : "Terminanfrage absenden"}
     </button>
+
   </div>
 </section>
           </form>
