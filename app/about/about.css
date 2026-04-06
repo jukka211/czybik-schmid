@@ -1,0 +1,183 @@
+/* ═══════════════════════════════════════
+   ABOUT PAGE – right column
+   ═══════════════════════════════════════ */
+
+   .about-col-right {
+    position: fixed;
+    top: 0;
+    height: 100vh;
+    overflow-y: auto;
+    overflow-x: hidden;
+    background: #fff;
+    z-index: 5;
+    -webkit-overflow-scrolling: touch;
+    cursor: pointer;
+  }
+
+  .about-scroll-space {
+    position: relative;
+    background: transparent;
+  }
+  
+  .about-sticky {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow: hidden;
+    background: #fff;
+  }
+  
+  .about-block {
+    position: relative;
+    padding-top: 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    will-change: transform;
+  }
+  
+  .about-intro {
+    width: 100%;
+    padding: 0px;
+  }
+  
+  .about-intro p {
+    margin: 0;
+    font-weight: 600;
+    line-height: 0.96;
+    text-align: left;
+    letter-spacing: -0.03em;
+    transition: font-size 0.05s linear;
+  }
+  
+  .about-person {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 0;
+    padding: 12px;
+    padding-bottom: 9rem;
+  }
+  .about-person:last-child {
+    padding-bottom: 12px;
+  }
+  .about-person-meta {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .about-person-meta h1 {
+    margin: 0;
+  }
+  
+  .about-person-web {
+    font: inherit;
+    color: inherit;
+    text-decoration: none;
+  }
+  
+  .about-person-web:hover {
+    text-decoration: underline;
+  }
+  
+  .about-person-photo {
+    display: block;
+    width: auto;
+    transform-origin: top left;
+    transition: transform 0.01s linear;
+  }
+  
+  .about-photo-img {
+    display: block;
+    width: auto;
+    max-width: 50%;
+    height: auto;
+    object-fit: contain;
+  }
+  
+  .about-person h1 {
+    margin: 0.5rem 0 0;
+    width: 100%;
+    text-align: left;
+    font-weight: 500;
+    line-height: 1;
+    letter-spacing: -0.03em;
+    font-size: clamp(0.7rem, 0.8vw, 1.5rem);
+    font-weight: 400;
+
+  }
+  
+  .about-bio-wrap {
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.5rem;
+    min-width: 0;
+    margin-top: 1.2rem;
+  }
+  
+  .about-bio-col {
+    min-width: 0;
+  }
+  
+  .about-bio-col p {
+    margin: 0;
+    font-size: clamp(0.7rem, 0.8vw, 1.5rem);
+    font-weight: 400;
+    line-height: 1.1;
+  }
+  
+  /* ═══════════════════════════════════════
+     ABOUT PAGE – mobile
+     ═══════════════════════════════════════ */
+  
+  @media screen and (max-width: 767px) {
+    .about-col-right {
+      position: relative;
+      top: auto;
+      left: auto;
+      width: 100vw;
+      height: auto;
+      overflow: visible;
+      margin-top: calc(2vw + 50px);
+    }
+  
+    .about-scroll-space {
+      height: auto !important;
+    }
+  
+    .about-sticky {
+      position: relative;
+      height: auto;
+      overflow: visible;
+    }
+  
+    .about-block {
+      transform: none !important;
+    }
+  
+    .about-intro p {
+      font-size: 24px !important;
+      transition: none;
+    }
+  
+    .about-person-photo {
+      max-height: none !important;
+    }
+  
+    .about-photo-img {
+      height: auto;
+    }
+  
+    .about-bio-wrap {
+      grid-template-columns: 1fr;
+      gap: 1rem;
+    }
+  
+    .about-person {
+      padding-bottom: 4rem;
+    }
+  }

@@ -6,8 +6,31 @@ import { ratelimit } from "@/sanity/lib/ratelimit";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
+type ApplicationBody = {
+  contactBlock?: string;
+  billingAddress?: string;
+  category?: string;
+  topicDescription?: string;
+  date?: string;
+  assignmentTimes?: string;
+  eventStartTime?: string;
+  address?: string;
+  imageCount?: string | number;
+  deliveryDate?: string;
+  leitwegId?: string;
+  referenceNotes?: string;
+  notes?: string;
+  consent?: boolean;
+  turnstileToken?: string;
+};
+
 async function verifyTurnstile(token: string, ip?: string) {
-  const secret = process.env.TURNSTILE_SECRET_KEY!;
+  const secret = process.env.TURNSTILE_SECRET_KEY;
+
+  if (!secret) {
+    throw new Error("Missing TURNSTILE_SECRET_KEY");
+  }
+
   const form = new FormData();
   form.append("secret", secret);
   form.append("response", token);
@@ -15,75 +38,95 @@ async function verifyTurnstile(token: string, ip?: string) {
 
   const resp = await fetch(
     "https://challenges.cloudflare.com/turnstile/v0/siteverify",
-    { method: "POST", body: form }
+    {
+      method: "POST",
+      body: form,
+    }
   );
 
-  return (await resp.json()) as { success: boolean; "error-codes"?: string[] };
+  if (!resp.ok) {
+    throw new Error(`Turnstile verification failed with status ${resp.status}`);
+  }
+
+  return (await resp.json()) as {
+    success: boolean;
+    "error-codes"?: string[];
+  };
 }
 
-function formatCategory(v: any) {
-  const s = String(v || "");
+function formatCategory(value: unknown) {
+  const s = String(value || "");
   if (s === "event_foto") return "Event Foto";
   if (s === "event_foto_video") return "Event Foto + Video";
   if (s === "portrait") return "Porträt";
-  return s || "";
+  return s;
 }
 
-function formatText(body: any) {
+function clean(value: unknown) {
+  return String(value || "").trim();
+}
+
+function formatText(body: ApplicationBody) {
   return [
     `1. Name und Kontaktdaten`,
-    `${body.contactBlock || ""}`,
+    clean(body.contactBlock),
     ``,
     `2. Verbindliche Rechnungsanschrift`,
-    `${body.billingAddress || ""}`,
+    clean(body.billingAddress),
     ``,
     `3. Kategorie`,
-    `${formatCategory(body.category)}`,
+    formatCategory(body.category),
     ``,
     `4. Thema / Beschreibung`,
-    `${body.topicDescription || ""}`,
+    clean(body.topicDescription),
     ``,
     `5. Datum`,
-    `${body.date || ""}`,
+    clean(body.date),
     ``,
     `6. Uhrzeit Einsatzzeiten`,
-    `${body.assignmentTimes || ""}`,
+    clean(body.assignmentTimes),
     ``,
     `7. Uhrzeit Start der Veranstaltung`,
-    `${body.eventStartTime || ""}`,
+    clean(body.eventStartTime),
     ``,
     `8. Adresse / Ort`,
-    `${body.address || ""}`,
+    clean(body.address),
     ``,
     `9. Bildanzahl`,
-    `${body.imageCount || ""}`,
+    clean(body.imageCount),
     ``,
     `10. Lieferdatum`,
-    `${body.deliveryDate || ""}`,
+    clean(body.deliveryDate),
     ``,
     `11. Leitweg-ID`,
-    `${body.leitwegId || ""}`,
+    clean(body.leitwegId),
     ``,
     `12. Bewirtschafternummer / Referenz`,
-    `${body.referenceNumber || ""}`,
+    clean(body.referenceNotes),
     ``,
     `Anmerkungen`,
-    `${body.notes || ""}`,
+    clean(body.notes),
     ``,
     `Zustimmung: ${body.consent ? "JA" : "NEIN"}`,
   ].join("\n");
 }
 
+function extractEmail(contactBlock?: string) {
+  const text = String(contactBlock || "");
+  const match = text.match(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/i);
+  return match?.[0] || null;
+}
+
 export async function POST(req: Request) {
-    const origin = req.headers.get("origin") || "";
-    const allowedList = (process.env.ALLOWED_ORIGINS || "")
-      .split(",")
-      .map((s) => s.trim())
-      .filter(Boolean);
-    
-    if (allowedList.length && origin && !allowedList.includes(origin)) {
-      return Response.json({ error: "Forbidden" }, { status: 403 });
-    }
+  const origin = req.headers.get("origin") || "";
+  const allowedList = (process.env.ALLOWED_ORIGINS || "")
+    .split(",")
+    .map((s) => s.trim())
+    .filter(Boolean);
+
+  if (allowedList.length && origin && !allowedList.includes(origin)) {
+    return Response.json({ error: "Forbidden" }, { status: 403 });
+  }
 
   const ip =
     req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
@@ -98,53 +141,83 @@ export async function POST(req: Request) {
     );
   }
 
-  const body = await req.json().catch(() => null);
+  const body = (await req.json().catch(() => null)) as ApplicationBody | null;
 
-  // Captcha check (server-side)
-  const token = String(body?.turnstileToken || "");
+  if (!body) {
+    return Response.json({ error: "Invalid JSON body" }, { status: 400 });
+  }
+
+  const token = clean(body.turnstileToken);
   if (!token) {
     return Response.json({ error: "Captcha required" }, { status: 400 });
   }
-  const verify = await verifyTurnstile(token, ip === "unknown" ? undefined : ip);
+
+  const verify = await verifyTurnstile(
+    token,
+    ip === "unknown" ? undefined : ip
+  );
+
   if (!verify.success) {
-    return Response.json({ error: "Captcha failed" }, { status: 400 });
+    return Response.json(
+      {
+        error: "Captcha failed",
+        details: verify["error-codes"] || [],
+      },
+      { status: 400 }
+    );
   }
 
-  if (!body?.consent) {
+  if (!body.consent) {
     return Response.json({ error: "Consent is required" }, { status: 400 });
   }
 
   try {
-    // 1) Save to Sanity
     const doc = await sanityWriteClient.create({
       _type: "applicationRequest",
-      ...body,
+      contactBlock: clean(body.contactBlock),
+      billingAddress: clean(body.billingAddress),
+      category: clean(body.category),
+      topicDescription: clean(body.topicDescription),
+      date: clean(body.date),
+      assignmentTimes: clean(body.assignmentTimes),
+      eventStartTime: clean(body.eventStartTime),
+      address: clean(body.address),
       imageCount: body.imageCount ? Number(body.imageCount) : undefined,
+      deliveryDate: clean(body.deliveryDate),
+      leitwegId: clean(body.leitwegId),
+      referenceNotes: clean(body.referenceNotes),
+      notes: clean(body.notes),
+      consent: Boolean(body.consent),
       createdAt: new Date().toISOString(),
     });
 
-    // 2) Send emails
-    const from = process.env.RESEND_FROM_EMAIL!;
-    const owner = process.env.RESEND_OWNER_EMAIL!;
+    const from = process.env.RESEND_FROM_EMAIL;
+    const owner = process.env.RESEND_OWNER_EMAIL;
+
+    if (!process.env.RESEND_API_KEY) {
+      throw new Error("Missing RESEND_API_KEY");
+    }
+    if (!from) {
+      throw new Error("Missing RESEND_FROM_EMAIL");
+    }
+    if (!owner) {
+      throw new Error("Missing RESEND_OWNER_EMAIL");
+    }
+
     const text = formatText(body);
-    const subject = `Neue Terminanfrage: ${body.firstName || ""} ${body.lastName || ""}`.trim();
+    const subject = `Neue Terminanfrage${
+      clean(body.category) ? ` – ${formatCategory(body.category)}` : ""
+    }`;
+
+    const replyTo = extractEmail(body.contactBlock);
 
     await resend.emails.send({
       from,
       to: owner,
       subject,
       text,
-      replyTo: body.email ? String(body.email) : undefined,
+      replyTo: replyTo || undefined,
     });
-
-    if (body.email) {
-      await resend.emails.send({
-        from,
-        to: String(body.email),
-        subject: "Kopie Ihrer Terminanfrage",
-        text: `Vielen Dank! Wir haben Ihre Anfrage erhalten.\n\n---\n${text}`,
-      });
-    }
 
     return Response.json({ ok: true, id: doc._id }, { status: 200 });
   } catch (err: any) {

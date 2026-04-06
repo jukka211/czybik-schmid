@@ -2,35 +2,110 @@
   min-height: 100vh;
   background: #fff;
   color: #000;
-  font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-  font-weight: 800;
-  font-size: 0.9rem;
-  overflow-x: hidden;
+  font-size: clamp(0.82rem, 0.78rem + 0.18vw, 0.98rem);
+  overflow: hidden;
+}
+
+.datenschutzRight {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  background: #fff;
 }
 
 .datenschutzWrap {
-  width: min(90vw, 720px);
+  width: 100%;
   margin: 0 auto;
-  padding: 0.5rem 1rem;
+  padding: 1rem 1rem 1rem;
 }
 
 .datenschutzTitle {
-  text-align: center;
-  font-size: clamp(2rem, 6vw, 4rem);
-  font-weight: 800;
-  line-height: 0.95;
-  margin: 0 0 1.5rem 0;
+  text-align: left;
+  font-size: clamp(1.25rem, 1.05rem + 0.7vw, 1.7rem);
+  font-weight: 600;
+  line-height: 0.9;
+  margin: 0 0 1rem 0;
 }
 
-.datenschutzText {
-  font-size: 0.9rem;
+/* ── Row layout: title + content side by side ── */
+
+.dsRow {
+  display: grid;
+  grid-template-columns: minmax(clamp(140px, 15vw, 220px), clamp(220px, 22vw, 420px)) minmax(0, 1fr);
+  column-gap: clamp(1rem, 2vw, 3rem);
+  align-items: start;
+  padding: 1.25rem 0;
+}
+
+.dsRow:first-of-type {
+  border-top: none;
+}
+
+.dsRowTitle {
+  margin: 0;
+  font-size: clamp(0.9rem, 1.2vw, 2.5rem);
+  font-weight: 600;
+  line-height: 1;
+  padding-top: 0.2rem;
+  letter-spacing: -0.02em;
+}
+
+.dsRowContent {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  min-width: 0;
+}
+
+.dsRowContent p {
+  margin: 0;
+  font-size: clamp(0.7rem, 0.8vw, 1.5rem);
+  font-weight: 400;
   line-height: 1.1;
-  color: #000;
 }
 
-@media (max-width: 640px) {
+.dsRowContent ul {
+  margin: 0;
+  padding-left: 1rem;
+  font-size: clamp(0.7rem, 0.8vw, 1.5rem);
+  font-weight: 400;
+  line-height: 1.1;
+  list-style-type: disc;
+}
+
+.dsRowContent li {
+  margin-bottom: 0.3rem;
+}
+
+/* ── Mobile ── */
+
+@media (max-width: 767px) {
+  .datenschutzPage {
+    overflow: visible;
+  }
+
+  .datenschutzRight {
+    position: relative;
+    top: 0;
+    bottom: auto;
+    min-height: 100vh;
+  }
+
   .datenschutzWrap {
     width: 100vw;
-    padding: 0.5rem 0.5rem;
+    padding: 5.75rem 0.75rem 2.5rem;
+  }
+
+  .datenschutzTitle {
+    font-size: clamp(2.25rem, 11vw, 4.5rem);
+  }
+
+  .dsRow {
+    grid-template-columns: 1fr;
+    row-gap: 0.5rem;
+  }
+
+  .dsRowTitle {
+    font-size: 1.2rem;
   }
 }
