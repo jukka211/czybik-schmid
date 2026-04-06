@@ -142,7 +142,7 @@
       width: 100vw;
       height: auto;
       overflow: visible;
-      margin-top: calc(6vw + 50px);
+      margin-top: calc(1vw + 50px);
     }
   
     .about-scroll-space {
@@ -157,6 +157,7 @@
   
     .about-block {
       transform: none !important;
+      padding-top: 0;
     }
   
     .about-intro p {
@@ -172,6 +173,10 @@
         margin: 0;
         font-size: clamp(0.95rem, 0.8vw, 1.4rem);
       }
+
+        .about-person h1 {
+            font-size: clamp(0.95rem, 0.8vw, 1.4rem);
+       }
     .about-photo-img {
       height: auto;
     }
