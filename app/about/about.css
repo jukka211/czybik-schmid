@@ -1,8 +1,20 @@
 /* ═══════════════════════════════════════
-   ABOUT PAGE – right column
+   ABOUT PAGE – base
+   Adjust intro sizes here
    ═══════════════════════════════════════ */
 
-   .about-col-right {
+   .about-page {
+    --about-intro-font-size: clamp(1.8rem, 2.4vw, 6rem);
+    --about-intro-line-height: 0.96;
+    --about-intro-letter-spacing: -0.03em;
+    --about-intro-padding: 0;
+  }
+  
+  /* ═══════════════════════════════════════
+     ABOUT PAGE – right column
+     ═══════════════════════════════════════ */
+  
+  .about-col-right {
     position: fixed;
     top: 0;
     height: 100vh;
@@ -13,17 +25,18 @@
     -webkit-overflow-scrolling: touch;
     cursor: pointer;
   }
-
+  
   .about-scroll-space {
     position: relative;
+    min-height: 100%;
     background: transparent;
   }
   
   .about-sticky {
-    position: sticky;
-    top: 0;
-    height: 100vh;
-    overflow: hidden;
+    position: relative;
+    top: auto;
+    height: auto;
+    overflow: visible;
     background: #fff;
   }
   
@@ -33,21 +46,20 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    will-change: transform;
   }
   
   .about-intro {
     width: 100%;
-    padding: 0px;
+    padding: var(--about-intro-padding);
   }
   
   .about-intro p {
     margin: 0;
     font-weight: 600;
-    line-height: 0.96;
+    line-height: var(--about-intro-line-height);
     text-align: left;
-    letter-spacing: -0.03em;
-    transition: font-size 0.05s linear;
+    letter-spacing: var(--about-intro-letter-spacing);
+    font-size: var(--about-intro-font-size);
   }
   
   .about-person {
@@ -60,34 +72,22 @@
     padding: 12px;
     margin-bottom: 9rem;
   }
+  
   .about-person:last-child {
     padding-bottom: 12px;
   }
+  
   .about-person-meta {
     width: 100%;
     display: flex;
     flex-direction: column;
     align-items: flex-start;
   }
-  .about-person-meta h1 {
-    margin: 0;
-  }
-  
-  .about-person-web {
-    font: inherit;
-    color: inherit;
-    text-decoration: none;
-  }
-  
-  .about-person-web:hover {
-    text-decoration: underline;
-  }
   
   .about-person-photo {
     display: block;
     width: auto;
     transform-origin: top left;
-    transition: transform 0.01s linear;
   }
   
   .about-photo-img {
@@ -98,25 +98,13 @@
     object-fit: contain;
   }
   
-  .about-person h1 {
-    margin: 0.5rem 0 0;
-    width: 100%;
-    text-align: left;
-    font-weight: 500;
-    line-height: 1;
-    letter-spacing: -0.03em;
-    font-size: clamp(0.7rem, 0.8vw, 1.5rem);
-    font-weight: 400;
-
-  }
-  
   .about-bio-wrap {
     width: 100%;
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 1.5rem;
     min-width: 0;
-    margin-top: 1.2rem;
+    margin-top: 0.75rem;
   }
   
   .about-bio-col {
@@ -131,10 +119,32 @@
   }
   
   /* ═══════════════════════════════════════
-     ABOUT PAGE – mobile
+     ABOUT PAGE – desktop tuning
+     ═══════════════════════════════════════ */
+  
+  @media screen and (min-width: 1440px) {
+    .about-page {
+      --about-intro-font-size: clamp(3.25rem, 2.6vw, 6rem);
+    }
+  }
+  
+  @media screen and (min-width: 1920px) {
+    .about-page {
+      --about-intro-font-size: clamp(3.5rem, 2.7vw, 6.5rem);
+    }
+  }
+  
+  /* ═══════════════════════════════════════
+     ABOUT PAGE – tablet / mobile
      ═══════════════════════════════════════ */
   
   @media screen and (max-width: 767px) {
+    .about-page {
+      --about-intro-font-size: clamp(1.5rem, 7.2vw, 2.4rem);
+      --about-intro-line-height: 0.98;
+      --about-intro-padding: 0.5rem;
+    }
+  
     .about-col-right {
       position: relative;
       top: auto;
@@ -146,7 +156,8 @@
     }
   
     .about-scroll-space {
-      height: auto !important;
+      height: auto;
+      min-height: auto;
     }
   
     .about-sticky {
@@ -156,27 +167,19 @@
     }
   
     .about-block {
-      transform: none !important;
       padding-top: 0;
-    }
-  
-    .about-intro p {
-      font-size: 24px !important;
-      transition: none;
-      padding: 0.5rem;
+      transform: none !important;
     }
   
     .about-person-photo {
       max-height: none !important;
     }
+  
     .about-bio-col p {
-        margin: 0;
-        font-size: clamp(0.95rem, 0.8vw, 1.4rem);
-      }
-
-        .about-person h1 {
-            font-size: clamp(0.95rem, 0.8vw, 1.4rem);
-       }
+      margin: 0;
+      font-size: clamp(0.95rem, 4vw, 1.4rem);
+    }
+  
     .about-photo-img {
       height: auto;
     }

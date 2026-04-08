@@ -38,7 +38,7 @@ body {
   align-items: flex-end;
   gap: 0;
   width: fit-content;
-  margin-left: auto;
+  margin-left: 0;
 }
 
 .logo {

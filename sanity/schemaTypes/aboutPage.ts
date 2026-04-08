@@ -23,16 +23,6 @@ export default defineType({
           title: "Person",
           fields: [
             defineField({
-              name: "name",
-              title: "Name",
-              type: "string",
-            }),
-            defineField({
-              name: "website",
-              title: "Website",
-              type: "url",
-            }),
-            defineField({
               name: "photo",
               title: "Portrait Photo",
               type: "image",
@@ -52,7 +42,22 @@ export default defineType({
             }),
           ],
           preview: {
-            select: { title: "name", media: "photo" },
+            select: { media: "photo", subtitle: "bioLeft" },
+            prepare({
+              media,
+              subtitle,
+            }: {
+              media: unknown;
+              subtitle?: string;
+            }) {
+              return {
+                title: "Person",
+                subtitle: subtitle
+                  ? subtitle.replace(/\s+/g, " ").slice(0, 80)
+                  : undefined,
+                media,
+              };
+            },
           },
         },
       ],

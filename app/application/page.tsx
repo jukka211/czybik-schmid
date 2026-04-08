@@ -187,28 +187,16 @@ export default function ApplicationPage() {
         </header>
 
         <p>
-          Sehr geehrte Damen und Herren, auf Ihren Wunsch fotografieren wir
-          deutschlandweit. Nutzen Sie bitte für Ihre Anfrage unser
-          Onlinebriefingformular.
+        Sehr geehrte Damen und Herren,
+nutzen Sie für Anfragen gerne unser Online-Briefingformular.
+        </p>
+        <p>
+        Alternativ können Sie hier unser Briefingformular als beschreibbare pdf Datei runterladen und uns per Email zusenden. 
+        Wir melden uns schnellstmöglich bei Ihnen zurück.
         </p>
 
-        <p>
-          Alternativ können Sie hier unser{" "}
-          <a
-            href="/bundesfoto-briefingformular.pdf"
-            target="_blank"
-            rel="noreferrer"
-            className="underline"
-          >
-            bundesfoto Briefingformular
-          </a>{" "}
-          als ausfüllbares PDF herunterladen (50 KB). Wir melden uns
-          schnellstmöglich bei Ihnen!
-        </p>
       </div>
     </section>
-
-    {/* keep all your existing field sections below exactly as they are */}
 
 <section className="applicationFieldRow">
   <h2 className="applicationFieldTitle text-xl">
@@ -392,7 +380,7 @@ export default function ApplicationPage() {
   <label className="applicationFieldInput space-y-1">
     <textarea
       className="w-full border rounded-md p-2 min-h-24"
-      name="referenceNumber"
+      name="referenceNotes"
     />
   </label>
 </section>
