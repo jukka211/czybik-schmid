@@ -59,9 +59,9 @@ export default function DesktopNav({
         </nav>
 
         <div className="nav-contact">
-          <a href="mailto:">E-Mail</a>
-          <a href="tel:">Telefon</a>
-        </div>
+  <a href="mailto:redaktion@czybik-schmid-media.de">E-Mail</a>
+  <a href="tel:+4915255133224">Telefon</a>
+</div>
       </motion.div>
 
       <motion.div

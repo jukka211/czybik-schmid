@@ -69,8 +69,8 @@ export default function MobileNav({
               </nav>
 
               <div className="mobile-info-contact">
-                <a href="mailto:">E-Mail,</a>
-                <a href="tel:">Telefon</a>
+              <a href="mailto:redaktion@czybik-schmid-media.de">E-Mail</a>
+              <a href="tel:+4915255133224">Telefon</a>
               </div>
 
               <div className="mobile-info-bottom">
