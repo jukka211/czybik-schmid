@@ -43,13 +43,10 @@ export default defineType({
           ],
           preview: {
             select: { media: "photo", subtitle: "bioLeft" },
-            prepare({
-              media,
-              subtitle,
-            }: {
-              media: unknown;
-              subtitle?: string;
-            }) {
+            prepare(value) {
+              const media = value?.media;
+              const subtitle = value?.subtitle as string | undefined;
+
               return {
                 title: "Person",
                 subtitle: subtitle
