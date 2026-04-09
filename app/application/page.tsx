@@ -191,9 +191,27 @@ export default function ApplicationPage() {
 nutzen Sie für Anfragen gerne unser Online-Briefingformular.
         </p>
         <p>
-        Alternativ können Sie hier unser Briefingformular als beschreibbare pdf Datei runterladen und uns per Email zusenden. 
-        Wir melden uns schnellstmöglich bei Ihnen zurück.
-        </p>
+  Alternativ können Sie hier unser{" "}
+  <a
+    href="/2026_CzybikSchmidMedia_Anfrageformular.pdf"
+    target="_blank"
+    rel="noopener noreferrer"
+    download
+    className="underline"
+  >
+    Briefingformular
+  </a>{" "}
+  als beschreibbare PDF-Datei herunterladen und uns per E-Mail
+  zusenden. Wir melden uns schnellstmöglich bei Ihnen zurück.
+</p>
+        <p>
+  E-Mail:{" "}
+  <a href="mailto:redaktion@czybik-schmid-media.de">
+    redaktion@czybik-schmid-media.de
+  </a>
+  <br />
+  Tel.: <a href="tel:+493081456619">+49-3081456619</a>
+</p>
 
       </div>
     </section>
