@@ -1,8 +1,9 @@
-// /Users/jukka_w/czybik-schmid/app/api/application/route.ts
+// /app/api/application/route.ts
 
 import { sanityWriteClient } from "@/sanity/lib/sanity.server";
 import { Resend } from "resend";
 import { ratelimit } from "@/sanity/lib/ratelimit";
+import { verifySolution } from "altcha-lib";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
@@ -21,38 +22,8 @@ type ApplicationBody = {
   referenceNotes?: string;
   notes?: string;
   consent?: boolean;
-  turnstileToken?: string;
+  altcha?: string;
 };
-
-async function verifyTurnstile(token: string, ip?: string) {
-  const secret = process.env.TURNSTILE_SECRET_KEY;
-
-  if (!secret) {
-    throw new Error("Missing TURNSTILE_SECRET_KEY");
-  }
-
-  const form = new FormData();
-  form.append("secret", secret);
-  form.append("response", token);
-  if (ip) form.append("remoteip", ip);
-
-  const resp = await fetch(
-    "https://challenges.cloudflare.com/turnstile/v0/siteverify",
-    {
-      method: "POST",
-      body: form,
-    }
-  );
-
-  if (!resp.ok) {
-    throw new Error(`Turnstile verification failed with status ${resp.status}`);
-  }
-
-  return (await resp.json()) as {
-    success: boolean;
-    "error-codes"?: string[];
-  };
-}
 
 function formatCategory(value: unknown) {
   const s = String(value || "");
@@ -147,25 +118,23 @@ export async function POST(req: Request) {
     return Response.json({ error: "Invalid JSON body" }, { status: 400 });
   }
 
-  const token = clean(body.turnstileToken);
-  if (!token) {
+  // --- Altcha verification ---
+  const altchaPayload = clean(body.altcha);
+  if (!altchaPayload) {
     return Response.json({ error: "Captcha required" }, { status: 400 });
   }
 
-  const verify = await verifyTurnstile(
-    token,
-    ip === "unknown" ? undefined : ip
-  );
-
-  if (!verify.success) {
-    return Response.json(
-      {
-        error: "Captcha failed",
-        details: verify["error-codes"] || [],
-      },
-      { status: 400 }
-    );
+  const hmacKey = process.env.ALTCHA_HMAC_KEY;
+  if (!hmacKey) {
+    console.error("Missing ALTCHA_HMAC_KEY env variable");
+    return Response.json({ error: "Server misconfiguration" }, { status: 500 });
   }
+
+  const verified = await verifySolution(altchaPayload, hmacKey);
+  if (!verified) {
+    return Response.json({ error: "Captcha verification failed" }, { status: 400 });
+  }
+  // --- End Altcha verification ---
 
   if (!body.consent) {
     return Response.json({ error: "Consent is required" }, { status: 400 });
