@@ -9,6 +9,7 @@ const resend = new Resend(process.env.RESEND_API_KEY);
 
 type ApplicationBody = {
   contactBlock?: string;
+  email?: string;
   billingAddress?: string;
   category?: string;
   topicDescription?: string;
@@ -42,37 +43,40 @@ function formatText(body: ApplicationBody) {
     `1. Name und Kontaktdaten`,
     clean(body.contactBlock),
     ``,
-    `2. Verbindliche Rechnungsanschrift`,
+    `2. E-Mail-Adresse`,
+    clean(body.email),
+    ``,
+    `3. Verbindliche Rechnungsanschrift`,
     clean(body.billingAddress),
     ``,
-    `3. Kategorie`,
+    `4. Kategorie`,
     formatCategory(body.category),
     ``,
-    `4. Thema / Beschreibung`,
+    `5. Thema / Beschreibung`,
     clean(body.topicDescription),
     ``,
-    `5. Datum`,
+    `6. Datum`,
     clean(body.date),
     ``,
-    `6. Uhrzeit Einsatzzeiten`,
+    `7. Uhrzeit Einsatzzeiten`,
     clean(body.assignmentTimes),
     ``,
-    `7. Uhrzeit Start der Veranstaltung`,
+    `8. Uhrzeit Start der Veranstaltung`,
     clean(body.eventStartTime),
     ``,
-    `8. Adresse / Ort`,
+    `9. Adresse / Ort`,
     clean(body.address),
     ``,
-    `9. Bildanzahl`,
+    `10. Bildanzahl`,
     clean(body.imageCount),
     ``,
-    `10. Lieferdatum`,
+    `11. Lieferdatum`,
     clean(body.deliveryDate),
     ``,
-    `11. Leitweg-ID`,
+    `12. Leitweg-ID`,
     clean(body.leitwegId),
     ``,
-    `12. Bewirtschafternummer / Referenz`,
+    `13. Bewirtschafternummer / Referenz`,
     clean(body.referenceNotes),
     ``,
     `Anmerkungen`,
@@ -80,12 +84,6 @@ function formatText(body: ApplicationBody) {
     ``,
     `Zustimmung: ${body.consent ? "JA" : "NEIN"}`,
   ].join("\n");
-}
-
-function extractEmail(contactBlock?: string) {
-  const text = String(contactBlock || "");
-  const match = text.match(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/i);
-  return match?.[0] || null;
 }
 
 export async function POST(req: Request) {
@@ -140,10 +138,16 @@ export async function POST(req: Request) {
     return Response.json({ error: "Consent is required" }, { status: 400 });
   }
 
+  const email = clean(body.email);
+  if (!email) {
+    return Response.json({ error: "Email is required" }, { status: 400 });
+  }
+
   try {
     const doc = await sanityWriteClient.create({
       _type: "applicationRequest",
       contactBlock: clean(body.contactBlock),
+      email,
       billingAddress: clean(body.billingAddress),
       category: clean(body.category),
       topicDescription: clean(body.topicDescription),
@@ -178,14 +182,12 @@ export async function POST(req: Request) {
       clean(body.category) ? ` – ${formatCategory(body.category)}` : ""
     }`;
 
-    const replyTo = extractEmail(body.contactBlock);
-
     await resend.emails.send({
       from,
       to: owner,
       subject,
       text,
-      replyTo: replyTo || undefined,
+      replyTo: email,
     });
 
     return Response.json({ ok: true, id: doc._id }, { status: 200 });

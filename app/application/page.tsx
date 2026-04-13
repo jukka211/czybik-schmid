@@ -219,7 +219,7 @@ export default function ApplicationPage() {
                   className="w-full border rounded-md p-2 min-h-24"
                   name="contactBlock"
                   placeholder={
-                    "Max Mustermann\n+49 123 456789\nmail@example.com"
+                    "Max Mustermann\n+49 123 456789"
                   }
                   required
                 />
@@ -229,6 +229,24 @@ export default function ApplicationPage() {
             <section className="applicationFieldRow">
               <h2 className="applicationFieldTitle text-xl">
                 <span className="applicationFieldNumber">2</span>
+                <span className="applicationFieldTitleText">
+                  E-Mail-Adresse *
+                </span>
+              </h2>
+              <label className="applicationFieldInput space-y-1">
+                <input
+                  className="w-full border rounded-md p-2"
+                  type="email"
+                  name="email"
+                  placeholder="mail@example.com"
+                  required
+                />
+              </label>
+            </section>
+
+            <section className="applicationFieldRow">
+              <h2 className="applicationFieldTitle text-xl">
+                <span className="applicationFieldNumber">3</span>
                 <span className="applicationFieldTitleText">
                   Verbindliche Rechnungsanschrift *
                 </span>
@@ -244,7 +262,7 @@ export default function ApplicationPage() {
 
             <section className="applicationFieldRow">
               <h2 className="applicationFieldTitle text-xl">
-                <span className="applicationFieldNumber">3</span>
+                <span className="applicationFieldNumber">4</span>
                 <span className="applicationFieldTitleText">Kategorie</span>
               </h2>
               <div className="applicationFieldInput flex flex-col gap-3">
@@ -269,7 +287,7 @@ export default function ApplicationPage() {
 
             <section className="applicationFieldRow">
               <h2 className="applicationFieldTitle text-xl">
-                <span className="applicationFieldNumber">4</span>
+                <span className="applicationFieldNumber">5</span>
                 <span className="applicationFieldTitleText">
                   Thema / Beschreibung *
                 </span>
@@ -284,7 +302,7 @@ export default function ApplicationPage() {
 
             <section className="applicationFieldRow">
               <h2 className="applicationFieldTitle text-xl">
-                <span className="applicationFieldNumber">5</span>
+                <span className="applicationFieldNumber">6</span>
                 <span className="applicationFieldTitleText">Datum</span>
               </h2>
               <label className="applicationFieldInput space-y-1">
@@ -298,7 +316,7 @@ export default function ApplicationPage() {
 
             <section className="applicationFieldRow">
               <h2 className="applicationFieldTitle text-xl">
-                <span className="applicationFieldNumber">6</span>
+                <span className="applicationFieldNumber">7</span>
                 <span className="applicationFieldTitleText">
                   Uhrzeit Einsatzzeiten
                 </span>
@@ -314,7 +332,7 @@ export default function ApplicationPage() {
 
             <section className="applicationFieldRow">
               <h2 className="applicationFieldTitle text-xl">
-                <span className="applicationFieldNumber">7</span>
+                <span className="applicationFieldNumber">8</span>
                 <span className="applicationFieldTitleText">
                   Uhrzeit Start der Veranstaltung
                 </span>
@@ -330,7 +348,7 @@ export default function ApplicationPage() {
 
             <section className="applicationFieldRow">
               <h2 className="applicationFieldTitle text-xl">
-                <span className="applicationFieldNumber">8</span>
+                <span className="applicationFieldNumber">9</span>
                 <span className="applicationFieldTitleText">
                   Adresse / Ort *
                 </span>
@@ -347,7 +365,7 @@ export default function ApplicationPage() {
 
             <section className="applicationFieldRow">
               <h2 className="applicationFieldTitle text-xl">
-                <span className="applicationFieldNumber">9</span>
+                <span className="applicationFieldNumber">10</span>
                 <span className="applicationFieldTitleText">Bildanzahl</span>
               </h2>
               <label className="applicationFieldInput space-y-1">
@@ -362,7 +380,7 @@ export default function ApplicationPage() {
 
             <section className="applicationFieldRow">
               <h2 className="applicationFieldTitle text-xl">
-                <span className="applicationFieldNumber">10</span>
+                <span className="applicationFieldNumber">11</span>
                 <span className="applicationFieldTitleText">Lieferdatum</span>
               </h2>
               <label className="applicationFieldInput space-y-1">
@@ -376,7 +394,7 @@ export default function ApplicationPage() {
 
             <section className="applicationFieldRow">
               <h2 className="applicationFieldTitle text-xl">
-                <span className="applicationFieldNumber">11</span>
+                <span className="applicationFieldNumber">12</span>
                 <span className="applicationFieldTitleText">Leitweg-ID</span>
               </h2>
               <label className="applicationFieldInput space-y-1">
@@ -389,7 +407,7 @@ export default function ApplicationPage() {
 
             <section className="applicationFieldRow">
               <h2 className="applicationFieldTitle text-xl">
-                <span className="applicationFieldNumber">12</span>
+                <span className="applicationFieldNumber">13</span>
                 <span className="applicationFieldTitleText">
                   Bewirtschafternummer / Referenz
                 </span>

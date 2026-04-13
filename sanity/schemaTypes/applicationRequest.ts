@@ -10,9 +10,12 @@ export const applicationRequest = defineType({
     defineField({ name: "contactBlock", title: "Name und Kontaktdaten", type: "text" }),
 
     // 2
-    defineField({ name: "billingAddress", title: "Rechnungsanschrift", type: "text" }),
+    defineField({ name: "email", title: "E-Mail-Adresse", type: "string" }),
 
     // 3
+    defineField({ name: "billingAddress", title: "Rechnungsanschrift", type: "text" }),
+
+    // 4
     defineField({
       name: "category",
       title: "Kategorie",
@@ -27,7 +30,7 @@ export const applicationRequest = defineType({
       },
     }),
 
-    // 4–12
+    // 5–13
     defineField({ name: "topicDescription", title: "Thema / Beschreibung", type: "text" }),
     defineField({ name: "date", title: "Datum", type: "string" }),
     defineField({ name: "assignmentTimes", title: "Uhrzeit Einsatzzeiten", type: "string" }),
