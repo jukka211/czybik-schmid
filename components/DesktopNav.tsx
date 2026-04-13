@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { motion } from "framer-motion";
-import type { MouseEventHandler } from "react";
+import { useState, useCallback, type MouseEventHandler } from "react";
 
 type ActivePage = "home" | "about" | "application" | "datenschutz";
 
@@ -17,6 +17,32 @@ export default function DesktopNav({
   expanded,
   onClick,
 }: DesktopNavProps) {
+  const [revealedEmail, setRevealedEmail] = useState(false);
+  const [revealedPhone, setRevealedPhone] = useState(false);
+
+  const handleEmailClick = useCallback(
+    (e: React.MouseEvent<HTMLAnchorElement>) => {
+      if (!revealedEmail) {
+        e.preventDefault();
+        e.stopPropagation();
+        setRevealedEmail(true);
+      }
+      // second click: default <a> behavior opens mailto
+    },
+    [revealedEmail],
+  );
+
+  const handlePhoneClick = useCallback(
+    (e: React.MouseEvent<HTMLAnchorElement>) => {
+      if (!revealedPhone) {
+        e.preventDefault();
+        e.stopPropagation();
+        setRevealedPhone(true);
+      }
+    },
+    [revealedPhone],
+  );
+
   return (
     <motion.div
       className="col-left"
@@ -59,9 +85,13 @@ export default function DesktopNav({
         </nav>
 
         <div className="nav-contact">
-  <a href="mailto:redaktion@czybik-schmid-media.de">E-Mail</a>
-  <a href="tel:+493081456619">Telefon</a>
-</div>
+          <a href="mailto:redaktion@czybik-schmid-media.de" onClick={handleEmailClick}>
+            {revealedEmail ? "redaktion@czybik-schmid-media.de" : "E-Mail"}
+          </a>
+          <a href="tel:+493081456619" onClick={handlePhoneClick}>
+            {revealedPhone ? "+49-3081456619" : "Telefon"}
+          </a>
+        </div>
       </motion.div>
 
       <motion.div
@@ -76,8 +106,8 @@ export default function DesktopNav({
           marginLeft: "auto",
         }}
       >
-<Link href="/datenschutz">Impressum<br />Datenschutz</Link>
-<span>© 2026</span>
+        <Link href="/datenschutz">Impressum<br />Datenschutz</Link>
+        <span>© 2026</span>
       </motion.div>
     </motion.div>
   );
