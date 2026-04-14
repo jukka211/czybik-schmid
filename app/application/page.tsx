@@ -15,7 +15,6 @@ const poppins = Poppins({
 });
 
 export default function ApplicationPage() {
-  const [consent, setConsent] = useState(false);
   const [altchaVerified, setAltchaVerified] = useState(false);
   const [mounted, setMounted] = useState(false);
 
@@ -132,7 +131,6 @@ export default function ApplicationPage() {
 
               const payload = {
                 ...raw,
-                consent: Boolean(fd.get("consent")),
                 altcha: String(fd.get("altcha") || ""),
               };
 
@@ -156,7 +154,6 @@ export default function ApplicationPage() {
                 );
 
                 form.reset();
-                setConsent(false);
                 setAltchaVerified(false);
               } catch (err: any) {
                 setMessage(`❌ ${err.message || "Submit failed"}`);
@@ -446,18 +443,6 @@ export default function ApplicationPage() {
                   Pflichtfelder.
                 </span>
 
-                <label className="applicationConsentLabel flex items-start gap-3">
-                  <input
-                    type="checkbox"
-                    name="consent"
-                    className="mt-1"
-                    checked={consent}
-                    onChange={(e) => setConsent(e.target.checked)}
-                    required
-                  />
-                  <span className="text-sm">Ja, Terminanfrage absenden</span>
-                </label>
-
                 {mounted && (
                   <div>
                     {/* @ts-ignore — Altcha Web Component */}
@@ -475,7 +460,7 @@ export default function ApplicationPage() {
                 <button
                   type="submit"
                   className="px-4 py-2 rounded-md bg-black text-white disabled:opacity-40"
-                  disabled={!consent || submitting || !altchaVerified}
+                  disabled={submitting || !altchaVerified}
                 >
                   {submitting ? "Sending..." : "Terminanfrage absenden"}
                 </button>
