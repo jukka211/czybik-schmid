@@ -131,6 +131,7 @@ export default function ApplicationPage() {
 
               const payload = {
                 ...raw,
+                consent: true,
                 altcha: String(fd.get("altcha") || ""),
               };
 
