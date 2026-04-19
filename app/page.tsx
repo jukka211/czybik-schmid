@@ -45,8 +45,12 @@ export async function generateMetadata(): Promise<Metadata> {
   const homePage = await getHomePage();
 
   return {
-    title: homePage?.seoTitle || undefined,
-    description: homePage?.seoDescription || undefined,
+    title:
+      homePage?.seoTitle ||
+      "Czybik Schmid | Fotografie für Bund, Politik, Kultur und Institutionen",
+    description:
+      homePage?.seoDescription ||
+      "Seit 2018 fotografieren wir für den Bund sowie für politische, gesellschaftliche und kulturelle Formate – spezialisiert auf Porträt-, Event-, Reportage-, PR- und Architekturfotografie.",
   };
 }
 
